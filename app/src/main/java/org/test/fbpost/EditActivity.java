@@ -1,14 +1,19 @@
 package org.test.fbpost;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.time.LocalDateTime;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -41,10 +46,11 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void update(View v) {
         String title = edit_title.getText().toString();
         String content = edit_content.getText().toString();
-        String query="UPDATE tableName SET title = ?, content = ? WHERE id = ?";
+        String query="UPDATE tableName SET title = ?, content = ?, created_date = '" + LocalDateTime.now() + "' WHERE id = ?";
         String[] selections={title, content, String.valueOf(ID)};
         db.execSQL(query, selections);
         Toast.makeText(getApplicationContext(), "수정 성공", Toast.LENGTH_SHORT).show();
@@ -55,7 +61,10 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void back(View v) {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        Intent intent = new Intent(getApplicationContext(), ShowActivity.class);
+        intent.putExtra("id", ID);
+        setResult(Activity.RESULT_OK, intent);
+        startActivity(intent);
         finish();
     }
 }

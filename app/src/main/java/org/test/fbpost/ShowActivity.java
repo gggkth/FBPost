@@ -15,11 +15,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static java.sql.Types.NULL;
 
 public class ShowActivity extends AppCompatActivity {
 
-    TextView title, content;
+    TextView title, content, createDate;
     DBHelper dbHelper;
     SQLiteDatabase db;
     Cursor cursor;
@@ -34,6 +37,7 @@ public class ShowActivity extends AppCompatActivity {
         ID = intent.getIntExtra("id", 0);
         title = (TextView) findViewById(R.id.title);
         content = (TextView) findViewById(R.id.content);
+        createDate = (TextView) findViewById(R.id.create_date);
 
         dbHelper = new DBHelper(this);
         db = dbHelper.getWritableDatabase();
@@ -45,6 +49,7 @@ public class ShowActivity extends AppCompatActivity {
 
         title.setText(cursor.getString(1));
         content.setText(cursor.getString(2));
+        setDate(createDate, new Date(cursor.getLong(3)*1000));
 
         cursor.close();
 
@@ -89,6 +94,12 @@ public class ShowActivity extends AppCompatActivity {
         setResult(Activity.RESULT_OK, intent);
         startActivity(intent);
         finish();
+    }
+
+    public void setDate(TextView view, Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
+        String str = formatter.format(date);
+        view.setText(str);
     }
 
 
